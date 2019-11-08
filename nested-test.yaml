@@ -1,0 +1,79 @@
+---
+schema: armada/Chart/v1
+metadata:
+  schema: metadata/Document/v1
+  name: rook-ceph
+data:
+  chart_name: rook-ceph
+  release: rook-ceph
+  namespace: rook-ceph
+  wait:
+    timeout: 3600
+  install:
+    no_hooks: false
+  upgrade:
+    no_hooks: false
+  values: {}
+  source:
+    type: tar
+    location: https://charts.rook.io/release/rook-ceph-v1.1.4.tgz
+    subpath: rook-ceph
+  dependencies:
+    - helm-toolkit
+    - mysql
+---
+schema: armada/Chart/v1
+metadata:
+  schema: metadata/Document/v1
+  name: helm-toolkit
+data:
+  chart_name: helm-toolkit
+  release: helm-toolkit
+  namespace: helm-tookit
+  timeout: 600
+  wait:
+    timeout: 600
+  values: {}
+  source:
+    type: git
+    location: https://opendev.org/openstack/openstack-helm-infra.git
+    subpath: helm-toolkit
+    reference: master
+---
+schema: armada/Chart/v1
+metadata:
+  schema: metadata/Document/v1
+  name: mysql
+data:
+  chart_name: mysql
+  release: mysql
+  namespace: default
+  timeout: 600
+  wait:
+    timeout: 600
+  values: {}
+  source:
+    type: git
+    location: https://github.com/rbalagopalakrishna/nested.git
+    subpath: nested-helm/nested/charts/mysql
+    reference: master
+---
+schema: armada/ChartGroup/v1
+metadata:
+  schema: metadata/Document/v1
+  name: armada-group
+data:
+  description: Deploys Simple Service
+  sequenced: False
+  chart_group:
+    - rook-ceph
+---
+schema: armada/Manifest/v1
+metadata:
+  schema: metadata/Document/v1
+  name: simple-armada
+data:
+  release_prefix: armada
+  chart_groups:
+    - armada-group
+...
